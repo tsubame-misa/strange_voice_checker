@@ -95,7 +95,6 @@ def post_test():
     score = get_loudness(body)
 
     word = get_word(body)
-    #word = "あいうえお"
     print(word)
     if len(word) > 0:
         word_point = get_word_point(word[0])
