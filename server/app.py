@@ -4,7 +4,7 @@ from flask_cors import CORS
 import scipy.io.wavfile
 import io
 import numpy as np
-import librosa
+#import librosa
 import os
 import json
 from google.cloud import speech
@@ -22,6 +22,7 @@ def test():
 @app.route('/api/test', methods=['POST'])
 def post_test():
     body = request.get_data()
+    """
     rate, data = scipy.io.wavfile.read(io.BytesIO(body))
     data = data.astype(np.float)
     S = np.abs(librosa.stft(data))
@@ -41,6 +42,7 @@ def post_test():
         dbLine.append(_max)
 
     score = sum(dbLine)/cnt
+    """
 
     client = speech.SpeechClient()
 
