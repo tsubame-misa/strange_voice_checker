@@ -6,14 +6,34 @@ import {
   IonIcon,
 } from "@ionic/react";
 import "./Home.css";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { startRecording } from "../service/recording";
 import { logoTwitter } from "ionicons/icons";
+import { useCountdownTimer } from "use-countdown-timer";
+import useCountDown from "react-countdown-hook";
 
 function Home() {
   const [recorder, setRecorder] = useState(null);
   const [audioSrc, setAudioSrc] = useState();
   const [data, setData] = useState(null);
+  const [timeId, setTimeId] = useState();
+  /*const { countdown, start, reset, pause, isRunning } = useCountdownTimer({
+    timer: 1000 * 5,
+  });*/
+  /*const initialTime = 5 * 1000; // initial time in milliseconds, defaults to 60000
+  const interval = 1000; // interval to change remaining time amount, defaults to 1000
+  const [timeLeft, { start, pause, resume, reset }] = useCountDown(
+    initialTime,
+    interval
+  );
+
+  const restart = useCallback(() => {
+    const newTime = 30 * 1000;
+    start(newTime);
+  }, []);  
+*/
+
+  console.log(timeId);
 
   return (
     <IonPage>
@@ -65,6 +85,12 @@ function Home() {
                 }
                 setAudioSrc(null);
                 setRecorder(await startRecording());
+                setTimeId(
+                  setTimeout(function () {
+                    setRecorder(null);
+                    console.log("30 seconds");
+                  }, 10000)
+                );
               }}
             >
               録音スタート
@@ -76,26 +102,35 @@ function Home() {
       <IonAlert
         isOpen={recorder != null}
         header="録音中"
-        message="録音中"
-        buttons={[{ text: "キャンセル", role: "cancel" }, { text: "完了" }]}
+        message={`30秒過ぎると録音が強制終了します`}
+        buttons={[
+          {
+            text: "キャンセル",
+            role: "cancel",
+          },
+          { text: "完了" },
+        ]}
         onDidDismiss={async (event) => {
           if (event.detail.role === "cancel") {
             await recorder.cancel();
           } else {
-            const wav = await recorder.stop();
-            setAudioSrc(URL.createObjectURL(wav));
-            const response = await fetch(
-              `${process.env.REACT_APP_API_ENDPOINT}/api/test`,
-              {
-                method: "POST",
-                body: wav,
-              }
-            );
-            const result = await response.json();
-            setData(result);
+            if (recorder) {
+              const wav = await recorder.stop();
+              setAudioSrc(URL.createObjectURL(wav));
+              const response = await fetch(
+                `${process.env.REACT_APP_API_ENDPOINT}/api/test`,
+                {
+                  method: "POST",
+                  body: wav,
+                }
+              );
+              const result = await response.json();
+              setData(result);
+            }
           }
-
           setRecorder(null);
+          clearTimeout(timeId);
+          console.log("Confirm Cancel");
         }}
       />
     </IonPage>

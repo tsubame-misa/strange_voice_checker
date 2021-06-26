@@ -15,7 +15,7 @@ import math
 app = Flask(__name__)
 cors = CORS(app)
 
-threshold = -40
+threshold = -50
 
 
 @app.route("/test", methods=["GET"])
