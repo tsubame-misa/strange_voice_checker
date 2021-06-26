@@ -9,12 +9,13 @@ import os
 import json
 from google.cloud import speech
 import MeCab
+import math
 
 
 app = Flask(__name__)
 cors = CORS(app)
-# CORS(app, resources={r"/*": {"origins": "*"}})
-# 用言の条件　名詞 　形容詞　動詞
+
+threshold = -40
 
 
 @app.route("/test", methods=["GET"])
@@ -30,11 +31,11 @@ def get_loudness(body):
     dbLine = []
     cnt = 0
     for i in range(len(db[0])):
-        _max = -20
+        _max = threshold
         for j in range(len(db)):
             if _max <= db[j][i]:
                 _max = db[j][i]
-        if _max == -20:
+        if _max == threshold:
             _max = 0
         else:
             cnt += 1
@@ -42,8 +43,9 @@ def get_loudness(body):
         dbLine.append(_max)
 
     score = sum(dbLine)/cnt
+    score = (score+(-1*threshold))/(-1*threshold) * 50
 
-    return score
+    return round(score)
 
 
 def get_word(body):
@@ -59,7 +61,7 @@ def get_word(body):
     for result in response.results:
         print(result.alternatives[0].transcript)
         word.append(result.alternatives[0].transcript)
-    return word
+    return round(word)
 
 
 def get_word_point(text):
@@ -73,7 +75,7 @@ def get_word_point(text):
     point = 0
     for c in mecab.parse(text).splitlines()[:-1]:
         surface = c.split("\t")
-        pos = surface[3].split('-')
+        pos = surface[4].split('-')
         total += 1
         if pos[0] in check:
             point += 1
@@ -84,7 +86,9 @@ def get_word_point(text):
     if total != 0:
         res = point/total
 
-    return res
+    res = (1-res)*50
+
+    return round(res)
 
 
 @app.route('/api/test', methods=['POST'])
@@ -93,7 +97,8 @@ def post_test():
 
     score = get_loudness(body)
 
-    word = get_word(body)
+    #word = get_word(body)
+    word = "あいうえお"
     print(word)
     if len(word) > 0:
         word_point = get_word_point(word[0])
@@ -102,7 +107,7 @@ def post_test():
         word_point = 50
         word = "奇声すぎて判定できませんでした。"
 
-    return jsonify({"dBscore": score, "word": word})
+    return jsonify({"dBscore": score, "word": word, "word_score": word_point})
 
 
 if __name__ == "__main__":

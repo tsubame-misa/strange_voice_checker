@@ -1,56 +1,78 @@
 import {
   IonContent,
-  IonHeader,
   IonPage,
-  IonTitle,
-  IonToolbar,
   IonButton,
   IonAlert,
-  IonCard,
-  IonItem,
+  IonIcon,
 } from "@ionic/react";
 import "./Home.css";
 import { useState } from "react";
 import { startRecording } from "../service/recording";
+import { logoTwitter } from "ionicons/icons";
 
 function Home() {
   const [recorder, setRecorder] = useState(null);
   const [audioSrc, setAudioSrc] = useState();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>奇声チェッカー</IonTitle>
-        </IonToolbar>
-      </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Blank</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <audio controls>
-          {audioSrc && <source src={audioSrc} type="audio/wav" />}
-        </audio>
-        <IonButton
-          expand="block"
-          onClick={async () => {
-            if (recorder != null) {
-              return;
-            }
-            setAudioSrc(null);
-            setRecorder(await startRecording());
-          }}
-        >
-          録音スタート
-        </IonButton>
-        <IonCard>
-          <IonItem>score : &emsp; {data.dBscore}</IonItem>
-          <IonItem>sentence: &ensp; {data.word}</IonItem>
-        </IonCard>
+        {data ? (
+          <div style={{ textAlign: "center" }} className="login_logo">
+            <h2 style={{ textAlign: "center" }}>奇声JUDGE!</h2>
+            <h3>あなたの奇声は</h3>
+            <h1>{data.word_score + data.dBscore}</h1>
+
+            <h2> 「{data.word}」</h2>
+            <h5>うるささ：{data.dBscore} 点</h5>
+            <h5>奇抜さ：{data.word_score}点</h5>
+            <br />
+            <div>
+              <IonButton
+                onClick={() => {
+                  setData(null);
+                }}
+              >
+                リトライ
+              </IonButton>
+              <audio controls>
+                {audioSrc && <source src={audioSrc} type="audio/wav" />}
+              </audio>
+            </div>
+            <IonButton
+              size="small"
+              href={`http://twitter.com/share?url=https://strange-voice-checker.netlify.app&text=【あなたの奇声は${
+                data.dBscore + data.word_score
+              }点!!】%0a あなた：「${data.word}」 %0aうるささ：${
+                data.dBscore
+              }点 %0a奇抜さ：${
+                data.word_score
+              }点  %0a▼みんな奇声JUDGEしてみよう! &hashtags=奇声JUDGE&count=horizontal&lang=ja`}
+            >
+              <IonIcon icon={logoTwitter}></IonIcon>
+              &ensp;シェアする
+            </IonButton>
+          </div>
+        ) : (
+          <div className="login_logo">
+            <h2 style={{ textAlign: "center" }}>奇声JUDGE</h2>
+            <h4>あなたの奇声はどれくらい凄い？</h4>
+            <IonButton
+              onClick={async () => {
+                if (recorder != null) {
+                  return;
+                }
+                setAudioSrc(null);
+                setRecorder(await startRecording());
+              }}
+            >
+              録音スタート
+            </IonButton>
+          </div>
+        )}
       </IonContent>
+
       <IonAlert
         isOpen={recorder != null}
         header="録音中"
@@ -70,7 +92,6 @@ function Home() {
               }
             );
             const result = await response.json();
-            console.log(result);
             setData(result);
           }
 
