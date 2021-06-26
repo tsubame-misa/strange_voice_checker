@@ -22,15 +22,8 @@ cors = CORS(app)
 # CORS(app, resources={r"/*": {"origins": "*"}})
 
 
-@app.route("/user_message",  methods=['PUT'])
-def user_message():
-    text = json.loads(request.data.decode())
-    res = module.make_response(text)
-    return jsonify(res)
-
-
-@app.route("/change_panda")
-def change_pand():
+@app.route("/test")
+def test():
     return jsonify("OK")
 
 
@@ -73,8 +66,6 @@ def post_test():
     for result in response.results:
         print(result.alternatives[0].transcript)
         word.append(result.alternatives[0].transcript)
-
-    Data = {"dBscore": score, "word": word}
 
     return jsonify({"dBscore": score, "word": word})
 
