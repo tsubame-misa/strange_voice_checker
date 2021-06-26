@@ -61,7 +61,7 @@ def get_word(body):
     for result in response.results:
         print(result.alternatives[0].transcript)
         word.append(result.alternatives[0].transcript)
-    return round(word)
+    return word
 
 
 def get_word_point(text):
@@ -97,17 +97,25 @@ def post_test():
 
     score = get_loudness(body)
 
-    #word = get_word(body)
-    word = "あいうえお"
+    word = get_word(body)
+
+    status = 1
+
     print(word)
     if len(word) > 0:
         word_point = get_word_point(word[0])
         print(word_point)
     else:
         word_point = 50
-        word = "奇声すぎて判定できませんでした。"
+        if score >= 25:
+            word = "奇声すぎて判定できませんでした"
+            status = 2
+        else:
+            word = "音声が確認できませんでした"
+            word_point = 0
+            status = 0
 
-    return jsonify({"dBscore": score, "word": word, "word_score": word_point})
+    return jsonify({"dBscore": score, "word": word, "word_score": word_point, "status": status})
 
 
 if __name__ == "__main__":
