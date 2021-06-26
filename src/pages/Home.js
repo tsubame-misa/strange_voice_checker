@@ -55,17 +55,17 @@ function Home() {
                   <g>
                     <circle cx="100" cy="100" r={95} fill="#ffc309" />
                     <text
-                      x="100"
+                      x="90"
                       y="100"
                       textAnchor="middle"
                       dominantBaseline="central"
                       fontSize="80"
                       style={{ userSelect: "none" }}
                     >
-                      {data.word_score + data.dBscore}
+                      {data.dBscore + data.word_score}
                     </text>
                     <text
-                      x="170"
+                      x="168"
                       y="120"
                       textAnchor="middle"
                       dominantBaseline="central"
@@ -133,6 +133,7 @@ function Home() {
                   setTimeId(
                     setTimeout(function () {
                       setRecorder(null);
+                      console.log("time out");
                     }, 30000)
                   );
                 }}
