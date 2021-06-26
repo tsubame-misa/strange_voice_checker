@@ -8,6 +8,14 @@ import scipy.io.wavfile
 import io
 import numpy as np
 import librosa
+import os
+import speech_recognition
+import sys
+import json
+import urllib.parse
+import urllib.request
+from google.cloud import speech
+import wave
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -47,10 +55,28 @@ def post_test():
 
         dbLine.append(_max)
 
-    print(dbLine)
-    print(sum(dbLine)/cnt)
+    score = sum(dbLine)/cnt
 
-    return jsonify("fin")
+    client = speech.SpeechClient()
+
+    audio = speech.RecognitionAudio(content=body)
+
+    config = speech.RecognitionConfig(
+        encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
+        sample_rate_hertz=16000,
+        language_code="ja-JP",
+    )
+
+    response = client.recognize(config=config, audio=audio)
+
+    word = []
+    for result in response.results:
+        print(result.alternatives[0].transcript)
+        word.append(result.alternatives[0].transcript)
+
+    Data = {"dBscore": score, "word": word}
+
+    return jsonify({"dBscore": score, "word": word})
 
 
 if __name__ == "__main__":

@@ -6,6 +6,8 @@ import {
   IonToolbar,
   IonButton,
   IonAlert,
+  IonCard,
+  IonItem,
 } from "@ionic/react";
 import "./Home.css";
 import { useState } from "react";
@@ -14,8 +16,7 @@ import { startRecording } from "../service/recording";
 function Home() {
   const [recorder, setRecorder] = useState(null);
   const [audioSrc, setAudioSrc] = useState();
-  const [sentenceData, setSentenceData] = useState([]);
-  const [freqData, setFreqData] = useState([]);
+  const [data, setData] = useState([]);
 
   return (
     <IonPage>
@@ -30,6 +31,9 @@ function Home() {
             <IonTitle size="large">Blank</IonTitle>
           </IonToolbar>
         </IonHeader>
+        <audio controls>
+          {audioSrc && <source src={audioSrc} type="audio/wav" />}
+        </audio>
         <IonButton
           expand="block"
           onClick={async () => {
@@ -42,6 +46,10 @@ function Home() {
         >
           録音スタート
         </IonButton>
+        <IonCard>
+          <IonItem>score : &emsp; {data.dBscore}</IonItem>
+          <IonItem>sentence: &ensp; {data.word}</IonItem>
+        </IonCard>
       </IonContent>
       <IonAlert
         isOpen={recorder != null}
@@ -54,7 +62,6 @@ function Home() {
           } else {
             const wav = await recorder.stop();
             setAudioSrc(URL.createObjectURL(wav));
-            //setLoading(true);
             const response = await fetch(
               `${process.env.REACT_APP_API_ENDPOINT}/api/test`,
               {
@@ -62,7 +69,11 @@ function Home() {
                 body: wav,
               }
             );
+            const result = await response.json();
+            console.log(result);
+            setData(result);
           }
+
           setRecorder(null);
         }}
       />
