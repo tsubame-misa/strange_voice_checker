@@ -61,7 +61,7 @@ def post_test():
         print(result.alternatives[0].transcript)
         word.append(result.alternatives[0].transcript)
 
-    return jsonify({"dBscore": score, "word": word})
+    return jsonify({"dBscore": 0, "word": word})
 
 
 if __name__ == "__main__":
