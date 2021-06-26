@@ -1,14 +1,14 @@
 {
-  "short_name": "Ionic App",
-  "name": "My Ionic App",
+  "short_name": "奇声JUDGE",
+  "name": "奇声JUDGE",
   "icons": [
     {
-      "src": "assets/icon/favicon.png",
+      "src": "assets/icon/icon.PNG",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "assets/icon/icon.png",
+      "src": "assets/icon/icon.PNG",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
