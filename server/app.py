@@ -65,8 +65,7 @@ def get_word(body):
 def get_word_point(text):
     check = ["名詞", "動詞", "形容詞", "形状詞"]
     print(text)
-    mecab = MeCab.Tagger(
-        "-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Ochasen")
+    mecab = MeCab.Tagger("")
 
     print(mecab.parse(text))
 
