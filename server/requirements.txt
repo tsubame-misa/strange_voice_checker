@@ -29,7 +29,6 @@ librosa==0.8.1
 llvmlite==0.36.0
 MarkupSafe==1.1.1
 matplotlib==3.4.1
-mecab==0.996.2
 mido==1.2.10
 module==0.0.4
 mojimoji==0.0.11
