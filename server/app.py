@@ -1,21 +1,13 @@
 import os
-from types import BuiltinMethodType
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import requests
-import json
 import scipy.io.wavfile
 import io
 import numpy as np
 import librosa
 import os
-import speech_recognition
-import sys
 import json
-import urllib.parse
-import urllib.request
 from google.cloud import speech
-import wave
 
 app = Flask(__name__)
 cors = CORS(app)
