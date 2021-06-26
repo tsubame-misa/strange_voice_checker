@@ -22,7 +22,7 @@ cors = CORS(app)
 # CORS(app, resources={r"/*": {"origins": "*"}})
 
 
-@app.route("/", methods=["GET"])
+@app.route("/test", methods=["GET"])
 def test():
     return jsonify("OK")
 
