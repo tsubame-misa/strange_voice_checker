@@ -79,6 +79,8 @@ def get_word_point(text):
         total += 1
         if pos[0] in check:
             point += 1
+        if pos[0] == "感動詞":
+            point += 0.5
         print(pos)
 
     print(point, total)

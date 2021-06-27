@@ -7,6 +7,7 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
+  IonLoading,
 } from "@ionic/react";
 import "./Home.css";
 import { useState } from "react";
@@ -19,6 +20,7 @@ function Home() {
   const [audioSrc, setAudioSrc] = useState();
   const [data, setData] = useState(null);
   const [timeId, setTimeId] = useState();
+  const [loading, setLoading] = useState(false);
 
   const twitteTxt = `http://twitter.com/share?url=https://strange-voice-checker.netlify.app&text=【あなたの奇声は${
     data?.dBscore + data?.word_score
@@ -144,7 +146,7 @@ function Home() {
           </div>
         )}
       </IonContent>
-
+      <IonLoading isOpen={loading} />
       <IonAlert
         isOpen={recorder != null}
         header="録音中"
@@ -163,6 +165,7 @@ function Home() {
             if (recorder) {
               const wav = await recorder.stop();
               setAudioSrc(URL.createObjectURL(wav));
+              setLoading(true);
               const response = await fetch(
                 `${process.env.REACT_APP_API_ENDPOINT}/api/test`,
                 {
@@ -175,6 +178,7 @@ function Home() {
             }
           }
           setRecorder(null);
+          setLoading(false);
           clearTimeout(timeId);
         }}
       />
